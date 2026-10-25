@@ -21,6 +21,7 @@ contract MADFactoryFixture {
     }
 }
 
+/// forge-config: default.fuzz.runs = 1000
 contract MADTokenTest is Test {
     uint256 private constant SUPPLY = 1_000_000_000 * 10 ** 18;
 
@@ -384,7 +385,7 @@ contract MADTokenTest is Test {
     }
 
     function testFuzz_transferConservesSupply(address recipient, uint256 amount) public {
-        vm.assume(recipient != address(0) && recipient != deployer);
+        if (recipient == address(0) || recipient == deployer) recipient = alice;
         amount = bound(amount, 0, SUPPLY);
         vm.prank(deployer);
         assertTrue(token.transfer(recipient, amount));
